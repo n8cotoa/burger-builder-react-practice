@@ -82,7 +82,8 @@ class BurgerBulider extends Component {
       <Aux>
         <Modal show={this.state.purchaseMode} modalClosed={this.purchaseCancelHandler}>
           <OrderSummary 
-            ingredients={this.state.ingredients} 
+            ingredients={this.state.ingredients}
+            totalPrice={this.state.totalPrice}
             continue={this.purchaseContinueHandler} 
             cancel={this.purchaseCancelHandler}/>
         </Modal>
