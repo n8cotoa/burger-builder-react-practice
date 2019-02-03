@@ -63,6 +63,10 @@ class BurgerBulider extends Component {
     this.setState({purchaseMode: true});
   }
 
+  purchaseCancelHandler = () => {
+    this.setState({purchaseMode: false});
+  }
+
   render() {
     const disabledInfo = {
       ...this.state.ingredients
@@ -72,7 +76,7 @@ class BurgerBulider extends Component {
     }
     return(
       <Aux>
-        <Modal show={this.state.purchaseMode}>
+        <Modal show={this.state.purchaseMode} modalClosed={this.purchaseCancelHandler}>
           <OrderSummary ingredients={this.state.ingredients}/>
         </Modal>
         <Burger ingredients={this.state.ingredients} />
