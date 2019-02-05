@@ -22,7 +22,8 @@ class BurgerBulider extends Component {
     totalPrice: 4,
     purchasable: false,
     purchaseMode: false,
-    loading: false
+    loading: false,
+    error: false
   }
 
   componentDidMount() {
@@ -31,7 +32,7 @@ class BurgerBulider extends Component {
         this.setState({ ingredients: res.data })
       })
       .catch(err => {
-        console.log(err)
+        this.setState({ error: true })
       })
   }
 
@@ -73,28 +74,37 @@ class BurgerBulider extends Component {
   }
 
   purchaseContinueHandler = () => {
-    this.setState({loading: true})
-    const order = {
-      ingredients: this.state.ingredients,
-      totalPrice: this.state.totalPrice,
-      customer: {
-        name: 'Nate C',
-        address: {
-          street: 'fake street',
-          zipCode: '334234',
-          country: 'USA'
-        },
-        email: 'test@test.com'
-      },
-      delivery: true
+    // this.setState({loading: true})
+    // const order = {
+    //   ingredients: this.state.ingredients,
+    //   totalPrice: this.state.totalPrice,
+    //   customer: {
+    //     name: 'Nate C',
+    //     address: {
+    //       street: 'fake street',
+    //       zipCode: '334234',
+    //       country: 'USA'
+    //     },
+    //     email: 'test@test.com'
+    //   },
+    //   delivery: true
+    // }
+    // axios.post('/orders.json', order)
+    //   .then(res => {
+    //     this.setState({ loading: false, purchaseMode: false });
+    //   })
+    //   .catch(err => {
+    //     this.setState({ loading: false, purchaseMode: false });
+    //   })
+    const queryParams = [];
+    for(let i in this.state.ingredients) {
+      queryParams.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.state.ingredients[i]))
     }
-    axios.post('/orders.json', order)
-      .then(res => {
-        this.setState({ loading: false, purchaseMode: false });
-      })
-      .catch(err => {
-        this.setState({ loading: false, purchaseMode: false });
-      })
+    const queryString = queryParams.join('&')
+    this.props.history.push({
+      pathname: '/checkout',
+      search: '?' + queryString
+    })
   }
 
   purchaseCancelHandler = () => {
@@ -110,7 +120,7 @@ class BurgerBulider extends Component {
     }
     let orderSummary = null;
 
-    let burger = <Spinner />;
+    let burger = this.state.error ? <p>Ingredients can't be loaded.</p> : <Spinner />;
     if (this.state.ingredients) {
       burger = (
         <Aux>
